@@ -68,7 +68,7 @@ class StarryRepository(
             }
 
             // Couldn't parse body
-            return Result.failure(Exception(responseBody))
+            return Result.failure(Exception("Couldn't read body!"))
         } catch (e: Exception) {
             return Result.failure(e)
         }

@@ -127,7 +127,11 @@ class VideoPlayerScreenVM(
             }
 
             is UiEvent.ResolutionSelected -> viewModelScope.launch {
-                videoPlaybackController.changeResolution(uiEvent.resolution)
+                val resolutionChanged = videoPlaybackController
+                    .changeResolution(uiEvent.resolution)
+                if (resolutionChanged) {
+                    _uiState.update { it?.copy(currentResolution = uiEvent.resolution) }
+                }
             }
 
             UiEvent.RetryClicked -> viewModelScope.launch {

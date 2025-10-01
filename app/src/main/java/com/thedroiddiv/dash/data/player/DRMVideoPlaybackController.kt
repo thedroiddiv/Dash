@@ -126,8 +126,17 @@ class DRMVideoPlaybackController(
         return player
     }
 
-    override suspend fun changeResolution(newResolution: ResolutionInfo) {
-        player?.let { player -> selectVideoResolution(player, newResolution) }
+    override suspend fun changeResolution(newResolution: ResolutionInfo): Boolean {
+        player?.let { player ->
+            try {
+                selectVideoResolution(player, newResolution)
+                return true
+            } catch (e: Exception) {
+                Log.e(TAG, "Error changing resolution", e)
+                return false
+            }
+        }
+        return false
     }
 
     override suspend fun release() {

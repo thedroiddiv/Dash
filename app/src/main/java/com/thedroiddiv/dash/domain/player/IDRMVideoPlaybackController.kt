@@ -11,7 +11,7 @@ interface IDRMVideoPlaybackController {
         callback: Callback
     ): ExoPlayer?
 
-    suspend fun changeResolution(newResolution: ResolutionInfo)
+    suspend fun changeResolution(newResolution: ResolutionInfo) : Boolean
 
     suspend fun release()
 
