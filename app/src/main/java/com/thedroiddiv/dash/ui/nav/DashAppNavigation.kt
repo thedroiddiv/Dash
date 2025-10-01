@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thedroiddiv.dash.domain.player.IDRMVideoPlaybackController
 import com.thedroiddiv.dash.ui.screen.details.VideoDetailsScreen
+import com.thedroiddiv.dash.ui.screen.details.sampleShowUiState
 import com.thedroiddiv.dash.ui.screen.home.HomeScreen
 import com.thedroiddiv.dash.ui.screen.player.VideoPlayerScreen
 import com.thedroiddiv.dash.ui.screen.player.VideoPlayerScreenVM
@@ -44,7 +45,7 @@ fun DashAppNavigation(
         }
 
         composable("video_details") {
-            VideoDetailsScreen()
+            VideoDetailsScreen(uiState = sampleShowUiState)
         }
     }
 }
