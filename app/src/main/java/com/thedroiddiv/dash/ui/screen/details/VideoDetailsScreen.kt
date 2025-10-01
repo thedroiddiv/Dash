@@ -20,11 +20,18 @@ import com.thedroiddiv.dash.ui.screen.details.components.EpisodeCard
 import com.thedroiddiv.dash.ui.screen.details.components.VideoHeroCard
 import com.thedroiddiv.dash.ui.theme.DashTheme
 
+@Composable
+fun VideoDetailsScreen(viewModel: VideoDetailsVM) {
+    val uiState by viewModel.uiState.collectAsState()
+    VideoDetailsScreen(uiState = uiState, onUiEvent = viewModel::onUiEvent)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VideoDetailsScreen(
+private fun VideoDetailsScreen(
     modifier: Modifier = Modifier,
-    uiState: UiState
+    uiState: UiState,
+    onUiEvent: (UiEvent) -> Unit
 ) {
     var userToken by remember { mutableStateOf("") }
     var isTokenVisible by remember { mutableStateOf(false) }
@@ -95,7 +102,14 @@ fun VideoDetailsScreen(
                         }
 
                         Button(
-                            onClick = { /* Handle load */ },
+                            onClick = {
+                                onUiEvent(
+                                    UiEvent.LoadVideoDetailsClicked(
+                                        videoId,
+                                        userToken
+                                    )
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Load Details")
@@ -104,22 +118,24 @@ fun VideoDetailsScreen(
                 }
             }
 
-            item {
-                VideoHeroCard(video = uiState.video)
-            }
-
-            if (uiState.video is Video.Show) {
+            uiState.video?.let { video ->
                 item {
-                    Text(
-                        text = "Episodes",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
+                    VideoHeroCard(video = video)
                 }
 
-                items(uiState.video.episodes) { episode ->
-                    EpisodeCard(episode = episode)
+                if (video is Video.Show) {
+                    item {
+                        Text(
+                            text = "Episodes",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
+
+                    items(video.episodes) { episode ->
+                        EpisodeCard(episode = episode)
+                    }
                 }
             }
         }
@@ -181,6 +197,6 @@ val sampleMovieUiState = UiState(
 @Composable
 fun VideoDetailsScreenPrev() {
     DashTheme {
-        VideoDetailsScreen(uiState = sampleShowUiState)
+        VideoDetailsScreen(uiState = sampleShowUiState, onUiEvent = { })
     }
 }

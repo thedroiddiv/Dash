@@ -7,8 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thedroiddiv.dash.domain.player.IDRMVideoPlaybackController
+import com.thedroiddiv.dash.domain.repository.VideoRepository
 import com.thedroiddiv.dash.ui.screen.details.VideoDetailsScreen
-import com.thedroiddiv.dash.ui.screen.details.sampleShowUiState
+import com.thedroiddiv.dash.ui.screen.details.VideoDetailsVM
+import com.thedroiddiv.dash.ui.screen.details.components.VideoDetailsVMFactory
 import com.thedroiddiv.dash.ui.screen.home.HomeScreen
 import com.thedroiddiv.dash.ui.screen.player.VideoPlayerScreen
 import com.thedroiddiv.dash.ui.screen.player.VideoPlayerScreenVM
@@ -17,7 +19,8 @@ import com.thedroiddiv.dash.ui.screen.player.VideoPlayerScreenVMFactory
 @Composable
 fun DashAppNavigation(
     modifier: Modifier = Modifier,
-    videoPlayerController: IDRMVideoPlaybackController
+    videoPlaybackController: IDRMVideoPlaybackController,
+    repository: VideoRepository
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -39,13 +42,17 @@ fun DashAppNavigation(
         composable("video_player") {
             // ideally the dependencies would come a DI framework such as hilt or koin
             val viewModel = viewModel<VideoPlayerScreenVM>(
-                factory = VideoPlayerScreenVMFactory(videoPlayerController)
+                factory = VideoPlayerScreenVMFactory(videoPlaybackController)
             )
             VideoPlayerScreen(viewModel)
         }
 
         composable("video_details") {
-            VideoDetailsScreen(uiState = sampleShowUiState)
+            // ideally the dependencies would come a DI framework such as hilt or koin
+            val viewModel = viewModel<VideoDetailsVM>(
+                factory = VideoDetailsVMFactory(repository)
+            )
+            VideoDetailsScreen(viewModel = viewModel)
         }
     }
 }
