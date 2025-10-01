@@ -21,8 +21,8 @@ class VideoPlayerScreenVM(
 
     val manifestUrl = "https://bitmovin-a.akamaihd.net/content/art-of-motion_drm/mpds/11331.mpd"
     val licenseServerUrl = "https://cwip-shaka-proxy.appspot.com/no_auth"
-    
-    var exoPlayer: ExoPlayer?  = null
+
+    var exoPlayer: ExoPlayer? = null
 
     private val _uiState = MutableStateFlow<UiState?>(null)
     val uiState = _uiState.asStateFlow()
@@ -32,9 +32,9 @@ class VideoPlayerScreenVM(
             _uiState.update { it?.copy(errorMessage = message) }
         }
 
-        override fun onStateChanged(playbackState: Int) {
+        override fun onStateChanged(playbackState: PlaybackState) {
             when (playbackState) {
-                Player.STATE_IDLE -> {
+                PlaybackState.IDLE -> {
                     _uiState.update {
                         it?.copy(
                             playbackState = PlaybackState.IDLE
@@ -42,7 +42,7 @@ class VideoPlayerScreenVM(
                     }
                 }
 
-                Player.STATE_BUFFERING -> {
+                PlaybackState.BUFFERING -> {
                     _uiState.update {
                         it?.copy(
                             isLoading = true,
@@ -51,7 +51,7 @@ class VideoPlayerScreenVM(
                     }
                 }
 
-                Player.STATE_READY -> {
+                PlaybackState.READY -> {
                     _uiState.update {
                         it?.copy(
                             isLoading = false,
@@ -60,7 +60,7 @@ class VideoPlayerScreenVM(
                     }
                 }
 
-                Player.STATE_ENDED -> {
+                PlaybackState.ENDED -> {
                     _uiState.update {
                         it?.copy(
                             playbackState = PlaybackState.ENDED
@@ -68,7 +68,7 @@ class VideoPlayerScreenVM(
                     }
                 }
 
-                else -> {
+                PlaybackState.UNKNOWN -> {
                     _uiState.update {
                         it?.copy(
                             playbackState = PlaybackState.UNKNOWN
@@ -80,7 +80,7 @@ class VideoPlayerScreenVM(
 
         override fun onTracksChanged(updatedInfo: List<ResolutionInfo>) {
             val state = uiState.value
-            if(state == null) return
+            if (state == null) return
             _uiState.update {
                 var currentResolution = state.currentResolution
                 if (currentResolution == null) {

@@ -1,6 +1,7 @@
 package com.thedroiddiv.dash.domain.player
 
 import androidx.media3.exoplayer.ExoPlayer
+import com.thedroiddiv.dash.domain.models.PlaybackState
 import com.thedroiddiv.dash.domain.models.ResolutionInfo
 
 interface IDRMVideoPlaybackController {
@@ -16,7 +17,7 @@ interface IDRMVideoPlaybackController {
 
     interface Callback {
         fun onError(message: String)
-        fun onStateChanged(playbackState: Int)
+        fun onStateChanged(playbackState: PlaybackState)
         fun onTracksChanged(updatedInfo: List<ResolutionInfo>)
     }
 }

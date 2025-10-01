@@ -19,8 +19,11 @@ import androidx.media3.exoplayer.drm.DefaultDrmSessionManager
 import androidx.media3.exoplayer.drm.DrmSessionManager
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm
 import androidx.media3.exoplayer.drm.HttpMediaDrmCallback
+import androidx.media3.ui.compose.PlayerSurface
+import com.thedroiddiv.dash.domain.models.PlaybackState
 import com.thedroiddiv.dash.domain.models.ResolutionInfo
 import com.thedroiddiv.dash.domain.player.IDRMVideoPlaybackController
+import kotlinx.coroutines.flow.update
 
 @OptIn(UnstableApi::class)
 class DRMVideoPlaybackController(
@@ -51,7 +54,14 @@ class DRMVideoPlaybackController(
 
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     Log.d(TAG, "Playback state changed: $playbackState")
-                    callback.onStateChanged(playbackState)
+                    val state = when (playbackState) {
+                        Player.STATE_IDLE -> PlaybackState.IDLE
+                        Player.STATE_BUFFERING -> PlaybackState.BUFFERING
+                        Player.STATE_READY -> PlaybackState.READY
+                        Player.STATE_ENDED -> PlaybackState.ENDED
+                        else -> PlaybackState.UNKNOWN
+                    }
+                    callback.onStateChanged(state)
                 }
 
                 override fun onTracksChanged(tracks: Tracks) {
